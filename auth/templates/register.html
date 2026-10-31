@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Wavve</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .auth-container {
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 30px;
+            background-color: #1e1e2d;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .auth-header h1 {
+            font-size: 2.5rem;
+            color: #ff5588;
+            margin-bottom: 10px;
+        }
+        
+        .auth-form-group {
+            margin-bottom: 20px;
+        }
+        
+        .auth-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #fff;
+        }
+        
+        .auth-form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #2a2a3a;
+            border: 1px solid #3a3a4a;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .auth-form-control:focus {
+            border-color: #ff5588;
+            outline: none;
+        }
+        
+        .auth-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #ff5588;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .auth-button:hover {
+            background-color: #ff3377;
+        }
+        
+        .auth-footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #aaa;
+        }
+        
+        .auth-footer a {
+            color: #ff5588;
+            text-decoration: none;
+        }
+        
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .flash-message {
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        
+        .flash-message.error {
+            background-color: rgba(255, 85, 85, 0.2);
+            border: 1px solid rgba(255, 85, 85, 0.5);
+            color: #ff5555;
+        }
+        
+        .flash-message.success {
+            background-color: rgba(85, 255, 136, 0.2);
+            border: 1px solid rgba(85, 255, 136, 0.5);
+            color: #55ff88;
+        }
+        
+        .password-requirements {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1><a href="/" style="text-decoration: none; color: inherit;">Wavve</a></h1>
+        </div>
+    </header>
+
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1>Create Account</h1>
+            <p>Join Wavve and discover your music</p>
+        </div>
+        
+        <div id="flash-container"></div>
+        
+        <form id="register-form" action="/auth/register" method="post">
+            <div class="auth-form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="auth-form-control" required>
+            </div>
+            
+            <div class="auth-form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" class="auth-form-control" required>
+            </div>
+            
+            <div class="auth-form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="auth-form-control" required>
+                <p class="password-requirements">Password must be at least 8 characters long</p>
+            </div>
+            
+            <div class="auth-form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" class="auth-form-control" required>
+            </div>
+            
+            <button type="submit" class="auth-button">Create Account</button>
+        </form>
+        
+        <div class="auth-footer">
+            <p>Already have an account? <a href="/auth/login">Login</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const registerForm = document.getElementById('register-form');
+            const flashContainer = document.getElementById('flash-container');
+            
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirm_password').value;
+                
+                // Basic validation
+                if (password.length < 8) {
+                    flashContainer.innerHTML = '<div class="flash-message error">Password must be at least 8 characters long</div>';
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    flashContainer.innerHTML = '<div class="flash-message error">Passwords do not match</div>';
+                    return;
+                }
+                
+                fetch('/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        email: email,
+                        password: password,
+                        confirm_password: confirmPassword
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Show success message
+                        flashContainer.innerHTML = '<div class="flash-message success">Registration successful! Redirecting to login...</div>';
+                        
+                        // Redirect to login page after a short delay
+                        setTimeout(() => {
+                            window.location.href = '/auth/login';
+                        }, 2000);
+                    } else {
+                        // Show error message
+                        flashContainer.innerHTML = `<div class="flash-message error">${data.message}</div>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    flashContainer.innerHTML = '<div class="flash-message error">An error occurred. Please try again.</div>';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

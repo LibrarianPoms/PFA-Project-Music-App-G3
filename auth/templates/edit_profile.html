@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - Wavve</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 100px auto;
+            padding: 30px;
+            background-color: #1e1e2d;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .profile-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .profile-header h1 {
+            font-size: 2.5rem;
+            color: #ff5588;
+            margin-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #fff;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #2a2a3a;
+            border: 1px solid #3a3a4a;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: #ff5588;
+            outline: none;
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .avatar-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .current-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;
+            box-shadow: 0 0 10px rgba(255, 85, 136, 0.3);
+        }
+        
+        .submit-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #ff5588;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background-color: #ff3377;
+        }
+        
+        .cancel-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: transparent;
+            color: #fff;
+            border: 1px solid #fff;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 15px;
+            text-decoration: none;
+        }
+        
+        .cancel-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        
+        .flash-message {
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        
+        .flash-message.error {
+            background-color: rgba(255, 85, 85, 0.2);
+            border: 1px solid rgba(255, 85, 85, 0.5);
+            color: #ff5555;
+        }
+        
+        .flash-message.success {
+            background-color: rgba(85, 255, 136, 0.2);
+            border: 1px solid rgba(85, 255, 136, 0.5);
+            color: #55ff88;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1><a href="/" style="text-decoration: none; color: inherit;">Wavve</a></h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/#discover">Discover</a></li>
+                <li><a href="/#trending">Trending</a></li>
+                <li><a href="/#playlists">Playlists</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="profile-container">
+        <div class="profile-header">
+            <h1>Edit Your Profile</h1>
+            <p>Update your profile information</p>
+        </div>
+        
+        <div id="flash-container"></div>
+        
+        <form id="edit-profile-form" method="POST" action="/profile/edit">
+            <div class="avatar-container">
+                <img id="current-avatar" class="current-avatar" src="{{ user.profile_image }}" alt="Your Avatar">
+                <div>
+                    <p>Current Profile Picture</p>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="display_name">Display Name</label>
+                <input type="text" id="display_name" name="display_name" class="form-control" value="{{ user.display_name }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" class="form-control" value="{{ user.email }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="profile_image_url">Profile Image URL</label>
+                <input type="url" id="profile_image_url" name="profile_image_url" class="form-control" placeholder="https://example.com/your-image.jpg" value="{{ user.profile_image }}">
+                <small style="color: #aaa; display: block; margin-top: 5px;">Enter a URL to an image (jpg, png, etc.)</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="bio">Bio</label>
+                <textarea id="bio" name="bio" class="form-control" placeholder="Tell us about yourself...">{{ user.bio }}</textarea>
+            </div>
+            
+            <h3 style="margin-top: 30px; color: #ff5588; border-bottom: 1px solid #3a3a4a; padding-bottom: 10px;">Change Password</h3>
+            <p style="color: #aaa; margin-bottom: 20px;">Leave blank if you don't want to change your password</p>
+            
+            <div class="form-group">
+                <label for="new_password">New Password</label>
+                <input type="password" id="new_password" name="new_password" class="form-control">
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm_password">Confirm New Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" class="form-control">
+            </div>
+            
+            <div class="btn-container">
+                <a href="/profile" class="cancel-btn">Cancel</a>
+                <button type="submit" class="submit-btn">Save Changes</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const editProfileForm = document.getElementById('edit-profile-form');
+            const currentAvatar = document.getElementById('current-avatar');
+            const displayNameInput = document.getElementById('display_name');
+            const profileImageInput = document.getElementById('profile_image');
+            const bioInput = document.getElementById('bio');
+            const flashContainer = document.getElementById('flash-container');
+            
+            // Fetch current user data
+            fetch('/api/current_user')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.authenticated) {
+                        const user = data.user;
+                        
+                        // Set current values
+                        currentAvatar.src = user.profile_image || 'https://via.placeholder.com/100';
+                        displayNameInput.value = user.display_name || '';
+                        profileImageInput.value = user.profile_image || '';
+                        bioInput.value = user.bio || '';
+                    } else {
+                        // Redirect to login if not authenticated
+                        window.location.href = '/auth/login';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    flashContainer.innerHTML = '<div class="flash-message error">Failed to load user data. Please try again.</div>';
+                });
+            
+            // Handle form submission
+            editProfileForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const displayName = displayNameInput.value.trim();
+                const profileImage = profileImageInput.value.trim();
+                const bio = bioInput.value.trim();
+                
+                // Basic validation
+                if (!displayName) {
+                    flashContainer.innerHTML = '<div class="flash-message error">Display name is required</div>';
+                    return;
+                }
+                
+                fetch('/profile/edit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        display_name: displayName,
+                        profile_image: profileImage,
+                        bio: bio
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Show success message and redirect
+                        window.location.href = '/profile?flash=Profile updated successfully';
+                    } else {
+                        // Show error message
+                        flashContainer.innerHTML = '<div class="flash-message error">Failed to update profile. Please try again.</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    flashContainer.innerHTML = '<div class="flash-message error">An error occurred. Please try again.</div>';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

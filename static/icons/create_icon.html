@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wavve Icon Creator</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        #iconCanvas {
+            border: 1px solid #ccc;
+        }
+        .controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #8e44ad;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <canvas id="iconCanvas" width="256" height="256"></canvas>
+        <div class="controls">
+            <button id="downloadBtn">Download Icon</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('iconCanvas');
+        const ctx = canvas.getContext('2d');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        // Draw purple circle background
+        function drawIcon() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw gradient circle
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#8e44ad');
+            gradient.addColorStop(1, '#9b59b6');
+            
+            ctx.beginPath();
+            ctx.arc(canvas.width/2, canvas.height/2, canvas.width/2 - 10, 0, Math.PI * 2);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            
+            // Draw wavy W
+            ctx.beginPath();
+            ctx.moveTo(60, 100);
+            ctx.lineTo(80, 170);
+            ctx.lineTo(100, 100);
+            ctx.lineTo(120, 170);
+            ctx.lineTo(140, 100);
+            ctx.lineTo(160, 170);
+            ctx.lineTo(180, 100);
+            ctx.lineTo(200, 170);
+            
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 16;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+        }
+
+        // Initialize
+        drawIcon();
+
+        // Download functionality
+        downloadBtn.addEventListener('click', function() {
+            const link = document.createElement('a');
+            link.download = 'wavve_icon.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    </script>
+</body>
+</html>

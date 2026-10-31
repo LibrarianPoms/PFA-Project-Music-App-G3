@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Wavve - Your Music Destination</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+        
+        /* Video background */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+        
+        /* Dimmed overlay */
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7); /* Dimming effect */
+            z-index: -1;
+        }
+        
+        /* Base animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(157, 78, 221, 0.4);
+            }
+            50% {
+                transform: scale(1.02);
+                box-shadow: 0 0 0 5px rgba(157, 78, 221, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(157, 78, 221, 0);
+            }
+        }
+        
+        /* Enhanced float animation with 3D effect */
+        @keyframes float3D {
+            0% {
+                transform: translateY(0) rotateY(0deg) scale(1);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            }
+            25% {
+                transform: translateY(-8px) rotateY(5deg) scale(1.02);
+                box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+            }
+            50% {
+                transform: translateY(-12px) rotateY(0deg) scale(1.03);
+                box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
+            }
+            75% {
+                transform: translateY(-8px) rotateY(-5deg) scale(1.02);
+                box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+            }
+            100% {
+                transform: translateY(0) rotateY(0deg) scale(1);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            }
+        }
+        
+        /* Vinyl record spin animation */
+        @keyframes vinylSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        @keyframes smoothFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Wave animation for text */
+        @keyframes textWave {
+            0%, 100% { transform: translateY(0); }
+            25% { transform: translateY(-3px); }
+            75% { transform: translateY(3px); }
+        }
+        
+        /* Shimmer effect */
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        
+        .landing-container {
+            display: flex;
+            height: 100vh;
+        }
+        
+        .landing-left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 5%;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .landing-right {
+            flex: 1;
+            background: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80') center center/cover;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .floating-album {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            background-size: cover;
+            background-position: center;
+            animation: float 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            z-index: 2;
+        }
+        
+        #album1 {
+            top: 20%;
+            left: 20%;
+            background-image: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80');
+            animation-delay: 0s;
+            animation: float3D 10s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        
+        #album2 {
+            top: 50%;
+            right: 15%;
+            background-image: url('https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80');
+            animation-delay: 1s;
+            animation: float3D 12s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        
+        #album3 {
+            bottom: 15%;
+            left: 30%;
+            background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80');
+            animation-delay: 2s;
+            animation: float3D 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        
+        /* Video-like elements */
+        .video-element {
+            position: absolute;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            z-index: 2;
+            transform-origin: center;
+        }
+        
+        .video-element::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 20%, rgba(0,0,0,0) 80%, rgba(0,0,0,0.2) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .video-element::after {
+            content: '\f144';
+            font-family: 'Font Awesome 5 Free';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .video-element:hover::after {
+            opacity: 1;
+        }
+        
+        #video1 {
+            top: 10%;
+            right: 20%;
+            width: 180px;
+            height: 100px;
+            background-image: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80');
+            background-size: cover;
+            animation: float3D 9s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.5s;
+        }
+        
+        #video2 {
+            bottom: 25%;
+            right: 25%;
+            width: 160px;
+            height: 120px;
+            background-image: url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80');
+            background-size: cover;
+            animation: float3D 11s cubic-bezier(0.4, 0, 0.2, 1) infinite 1.5s;
+        }
+        
+        .music-visualizer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            z-index: 1;
+        }
+        
+        .landing-right::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(157, 78, 221, 0.7) 0%, rgba(123, 44, 191, 0.7) 100%);
+            z-index: 1;
+        }
+        
+        .logo {
+            margin-bottom: 2rem;
+        }
+        
+        .logo h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .landing-tagline {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+        
+        .landing-description {
+            max-width: 500px;
+            margin-bottom: 2.5rem;
+            color: #aaa;
+            line-height: 1.7;
+        }
+        
+        .landing-features {
+            margin-bottom: 2.5rem;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .feature-icon.pulse {
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        .animate-in {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .cursor {
+            animation: blink 1.2s step-end infinite;
+        }
+        
+        .feature-text {
+            color: #ddd;
+            font-weight: 500;
+        }
+        
+        .landing-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .landing-button {
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+        
+        .login-button {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .login-button:hover {
+            background: rgba(157, 78, 221, 0.1);
+            transform: translateY(-3px);
+        }
+        
+        .signup-button {
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            border: none;
+            color: white;
+            box-shadow: 0 4px 15px rgba(157, 78, 221, 0.4);
+        }
+        
+        .signup-button:hover {
+            background: linear-gradient(90deg, var(--accent-color) 0%, var(--primary-color) 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(157, 78, 221, 0.6);
+        }
+        
+        .guest-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        
+        .guest-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .particles-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            background-color: rgba(157, 78, 221, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        /* Bubbles animation */
+        .bubbles-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            background: radial-gradient(
+                circle at 65% 15%, 
+                rgba(255, 255, 255, 0.1) 1px, 
+                rgba(157, 78, 221, 0.15) 3%, 
+                rgba(157, 78, 221, 0.05) 60%, 
+                rgba(157, 78, 221, 0.1) 100%
+            );
+            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.3), 
+                        0 0 15px rgba(157, 78, 221, 0.2);
+        }
+        
+        .bubble::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 15%;
+            width: 20%;
+            height: 20%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+        }
+        
+        @keyframes bubble-rise {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0.8) rotate(0deg);
+            }
+            10% {
+                opacity: 0.8;
+            }
+            30% {
+                opacity: 0.6;
+                transform: translateY(-30vh) scale(1) rotate(5deg);
+            }
+            70% {
+                opacity: 0.4;
+                transform: translateY(-70vh) scale(1.1) rotate(-5deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100vh) scale(0.9) rotate(10deg);
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .landing-container {
+                flex-direction: column;
+            }
+            
+            .landing-left {
+                padding: 3rem 5%;
+            }
+            
+            .landing-right {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Video background with overlay -->
+    <video class="video-background" autoplay loop muted playsinline>
+        <source src="/Generated_File_May_20_2025_-_9_55PM.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="video-overlay"></div>
+    
+    <div class="landing-container">
+        <div class="particles-container" id="particles"></div>
+        <div class="bubbles-container" id="bubbles"></div>
+        <canvas id="music-visualizer" class="music-visualizer"></canvas>
+        
+        <div class="landing-left">
+            <div class="logo animate-in">
+                <h1 id="logo-text">Wavve</h1>
+                <p class="landing-tagline"><span id="typing-text"></span><span class="cursor">|</span></p>
+            </div>
+            
+            <p class="landing-description animate-in" data-delay="300">
+                Discover, stream, and share millions of songs. Create playlists, follow your favorite artists, and enjoy a personalized music experience with Wavve.
+            </p>
+            
+            <div class="landing-features">
+                <div class="feature-item animate-in" data-delay="500">
+                    <div class="feature-icon pulse">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div class="feature-text">Millions of songs at your fingertips</div>
+                </div>
+                
+                <div class="feature-item animate-in" data-delay="700">
+                    <div class="feature-icon pulse">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <div class="feature-text">Create and share custom playlists</div>
+                </div>
+                
+                <div class="feature-item animate-in" data-delay="900">
+                    <div class="feature-icon pulse">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="feature-text">Stay updated with trending music</div>
+                </div>
+            </div>
+            
+            <div class="landing-buttons animate-in" data-delay="1100">
+                <a href="/auth/login" class="landing-button login-button">Login</a>
+                <a href="/auth/register" class="landing-button signup-button">Sign Up</a>
+            </div>
+            
+            <a href="/home" class="guest-link animate-in" data-delay="1300">Continue as Guest</a>
+        </div>
+        
+        <div class="landing-right">
+            <div class="floating-album" id="album1"></div>
+            <div class="floating-album" id="album2"></div>
+            <div class="floating-album" id="album3"></div>
+            <div class="video-element" id="video1"></div>
+            <div class="video-element" id="video2"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize all animations when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create particle background
+            initParticles();
+            
+            // Create bubbles animation
+            initBubbles();
+            
+            // Initialize typing effect
+            initTypingEffect();
+            
+            // Initialize fade-in animations
+            initFadeInAnimations();
+            
+            // Initialize music visualizer
+            initMusicVisualizer();
+            
+            // Add hover effects to buttons
+            initButtonEffects();
+        });
+        
+        // Create particle background
+        function initParticles() {
+            const particlesContainer = document.getElementById('particles');
+            
+            // Create particles
+            for (let i = 0; i < 50; i++) {
+                createParticle(particlesContainer);
+            }
+        }
+        
+        function createParticle(container) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            // Random size between 2px and 8px
+            const size = Math.random() * 6 + 2;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            
+            // Random position
+            const posX = Math.random() * 100;
+            const posY = Math.random() * 100;
+            particle.style.left = `${posX}%`;
+            particle.style.top = `${posY}%`;
+            
+            // Random opacity
+            particle.style.opacity = Math.random() * 0.5 + 0.1;
+            
+            // Add to container
+            container.appendChild(particle);
+            
+            // Animate particle
+            animateParticle(particle);
+        }
+        
+        function animateParticle(particle) {
+            // Random duration between 15s and 25s for smooth movement
+            const duration = Math.random() * 10000 + 15000;
+            
+            // Random movement (gentle motion)
+            const moveX = Math.random() * 10 - 5; // -5px to +5px
+            const moveY = Math.random() * 10 - 5; // -5px to +5px
+            
+            // Apply animation
+            particle.animate([
+                { transform: 'translate(0, 0)' },
+                { transform: `translate(${moveX}px, ${moveY}px)` }
+            ], {
+                duration: duration,
+                iterations: Infinity,
+                direction: 'alternate',
+                easing: 'cubic-bezier(0.4, 0, 0.2, 1)' // Material Design easing for smooth motion
+            });
+        }
+        
+        // Typing effect for tagline
+        function initTypingEffect() {
+            const text = "Your Music Destination";
+            const typingElement = document.getElementById('typing-text');
+            let i = 0;
+            
+            function typeWriter() {
+                if (i < text.length) {
+                    typingElement.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 120);
+                }
+            }
+            
+            setTimeout(typeWriter, 800);
+        }
+        
+        // Fade-in animations for elements
+        function initFadeInAnimations() {
+            const animatedElements = document.querySelectorAll('.animate-in');
+            
+            animatedElements.forEach(element => {
+                const delay = element.getAttribute('data-delay') || 0;
+                
+                setTimeout(() => {
+                    element.style.animation = `smoothFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards`;
+                }, delay * 1.2);
+            });
+        }
+        
+        // Music visualizer
+        function initMusicVisualizer() {
+            const canvas = document.getElementById('music-visualizer');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas dimensions
+            canvas.width = window.innerWidth;
+            canvas.height = 100;
+            
+            // Resize canvas when window is resized
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+            });
+            
+            // Create audio context for visualization
+            let audioContext;
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) {
+                console.log('Web Audio API is not supported in this browser');
+            }
+            
+            // Generate smooth audio data for visualization with 3D effect
+            function drawVisualizer() {
+                // Clear canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Set gradient
+                const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+                gradient.addColorStop(0, '#9d4edd');
+                gradient.addColorStop(0.5, '#c77dff');
+                gradient.addColorStop(1, '#9d4edd');
+                
+                // Number of bars
+                const barCount = 100;
+                const barWidth = canvas.width / barCount;
+                
+                // Draw bars with 3D wave effect
+                for (let i = 0; i < barCount; i++) {
+                    // Create smooth wave pattern with multiple frequencies
+                    const time = Date.now() / 2000;
+                    const phase1 = i / barCount * Math.PI * 2;
+                    const phase2 = i / barCount * Math.PI * 4;
+                    const phase3 = i / barCount * Math.PI * 8;
+                    
+                    // Combine multiple sine waves for complex movement
+                    const wave1 = Math.sin(time + phase1) * 12;
+                    const wave2 = Math.sin(time * 0.7 + phase2) * 6;
+                    const wave3 = Math.sin(time * 1.3 + phase3) * 4;
+                    
+                    // Base height plus wave effect
+                    const height = 12 + wave1 + wave2 + wave3;
+                    
+                    // Calculate color based on height for 3D effect
+                    const hue = 270 + (height / 40) * 20; // Purple range
+                    ctx.fillStyle = `hsla(${hue}, 80%, 60%, ${0.7 + height/40})`;  
+                    
+                    // Draw bar with rounded corners
+                    ctx.beginPath();
+                    ctx.roundRect(i * barWidth, canvas.height - height, barWidth - 1, height, [2, 2, 0, 0]);
+                    ctx.fill();
+                    
+                    // Add highlight for 3D effect
+                    ctx.fillStyle = `hsla(${hue}, 80%, 80%, 0.3)`;
+                    ctx.beginPath();
+                    ctx.roundRect(i * barWidth, canvas.height - height, barWidth - 1, 2, [2, 2, 0, 0]);
+                    ctx.fill();
+                }
+                
+                // Animate with requestAnimationFrame for smoother animation
+                requestAnimationFrame(drawVisualizer);
+            }
+            
+            // Start visualization
+            drawVisualizer();
+        }
+        
+        // Add hover effects to buttons
+        function initButtonEffects() {
+            const buttons = document.querySelectorAll('.landing-button');
+            
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px)';
+                    this.style.boxShadow = '0 7px 15px rgba(0, 0, 0, 0.3)';
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.2)';
+                });
+            });
+        }
+        
+        // Create bubbles animation
+        function initBubbles() {
+            const bubblesContainer = document.getElementById('bubbles');
+            const bubbleCount = 20;
+            
+            // Create bubbles
+            for (let i = 0; i < bubbleCount; i++) {
+                createBubble(bubblesContainer);
+            }
+            
+            // Continue creating bubbles periodically
+            setInterval(() => {
+                if (document.getElementById('bubbles')) {
+                    createBubble(bubblesContainer);
+                }
+            }, 3000);
+        }
+        
+        function createBubble(container) {
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+            
+            // Random size between 20px and 80px
+            const size = Math.random() * 60 + 20;
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+            
+            // Random horizontal position
+            const posX = Math.random() * 100;
+            bubble.style.left = `${posX}%`;
+            
+            // Add to container
+            container.appendChild(bubble);
+            
+            // Animate bubble
+            const duration = Math.random() * 10000 + 15000; // 15-25 seconds
+            bubble.animate([
+                { opacity: 0, transform: 'translateY(0) scale(0.8) rotate(0deg)' },
+                { opacity: 0.8, transform: 'translateY(-30vh) scale(1) rotate(5deg)', offset: 0.3 },
+                { opacity: 0.4, transform: 'translateY(-70vh) scale(1.1) rotate(-5deg)', offset: 0.7 },
+                { opacity: 0, transform: 'translateY(-100vh) scale(0.9) rotate(10deg)' }
+            ], {
+                duration: duration,
+                easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                fill: 'forwards'
+            }).onfinish = () => {
+                // Remove bubble after animation completes
+                if (bubble.parentNode) {
+                    bubble.parentNode.removeChild(bubble);
+                }
+            };
+        }
+    </script>
+</body>
+</html>
